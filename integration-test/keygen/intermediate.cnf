@@ -1,0 +1,13 @@
+[req]
+default_bits = 4096
+prompt = no
+default_md = sha256
+distinguished_name = dn
+req_extensions = req_ext
+
+[dn]
+CN = Intermediate CA
+
+[req_ext]
+keyUsage = critical, keyCertSign, cRLSign
+basicConstraints = critical, CA:true

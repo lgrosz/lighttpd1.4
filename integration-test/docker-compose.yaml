@@ -1,0 +1,3 @@
+services:
+  keygen:
+    build: keygen
