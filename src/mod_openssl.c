@@ -3745,6 +3745,7 @@ static void
 https_add_ssl_client_entries (request_st * const r, handler_ctx * const hctx)
 {
     X509 *xs;
+    STACK_OF(X509) xs_chain;
     X509_NAME *xn;
     buffer *vb = http_header_env_set_ptr(r, CONST_STR_LEN("SSL_CLIENT_VERIFY"));
 
@@ -3755,9 +3756,9 @@ https_add_ssl_client_entries (request_st * const r, handler_ctx * const hctx)
         return;
     }
   #if OPENSSL_VERSION_NUMBER < 0x30000000L
-    else if (!(xs = SSL_get_peer_certificate(hctx->ssl)))
+    else if (!(xs = SSL_get_peer_certificate(hctx->ssl) && xs_chain = SSL_get_peer_cert_chain(hctx->ssl)))
   #else
-    else if (!(xs = SSL_get0_peer_certificate(hctx->ssl)))
+    else if (!(xs = SSL_get0_peer_certificate(hctx->ssl) && xs_chain = SSL_get0_peer_cert_chain(hctx->ssl)))
   #endif
     {
         buffer_copy_string_len(vb, CONST_STR_LEN("NONE"));
@@ -3820,9 +3821,12 @@ https_add_ssl_client_entries (request_st * const r, handler_ctx * const hctx)
             BIO_read(bio, vb->ptr, n);
             BIO_free(bio);
         }
+
+        // TODO Iterate through xs_chain, creating SSL_CLIENT_CERT_CHAIN_<N>
     }
   #if OPENSSL_VERSION_NUMBER < 0x30000000L
     X509_free(xs);
+    sk_X509_free(xs_chain);
   #endif
 }
 
