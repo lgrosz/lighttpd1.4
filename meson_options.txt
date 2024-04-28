@@ -109,6 +109,11 @@ option('with_sasl',
 	value: 'disabled',
 	description: 'with SASL support for mod_authn_sasl [default: off]',
 )
+option('with_jwt',
+	type: 'feature',
+	value: 'disabled',
+	description: 'with JWT authentication support through mod_authn_jwt [defaults: off]',
+)
 #option('with_valgrind',
 #	type: 'boolean',
 #	value: false,

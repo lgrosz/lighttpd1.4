@@ -386,6 +386,44 @@ AM_CONDITIONAL([BUILD_WITH_SASL], [test "$WITH_SASL" != no])
 AC_SUBST([SASL_LIBS])
 AC_SUBST([SASL_CFLAGS])
 
+dnl Checks for libjwt library
+AC_MSG_NOTICE([----------------------------------------])
+AC_MSG_CHECKING([for LibJWT support])
+AC_ARG_WITH([jwt],
+  [AS_HELP_STRING([--with-jwt@<:@=PATH@:>@],
+    [Include JWT support in PATH/include/jwt.h and PATH/lib]
+  )],
+  [WITH_JWT=$withval],
+  [WITH_JWT=no]
+)
+AC_MSG_RESULT([$WITH_JWT])
+
+JWT_INCLUDE=
+JWT_LIBS=
+
+if test "$WITH_JWT" != no; then
+  if test "$WITH_JWT" != yes; then
+    SASL_CFLAGS="-I$WITH_JWT/include"
+    SASL_LIBS="-L$WITH_JWT/lib -ljwt"
+  else
+    AC_CHECK_HEADERS([jwt.h],
+      [AC_CHECK_LIB([jwt], [jwt_valid_new],
+        [
+          SASL_CFLAGS=
+          SASL_LIBS="-ljwt"
+        ],
+        [AC_MSG_ERROR([libjwt not found])]
+      )],
+      [AC_MSG_ERROR([JWT header not found])]
+    )
+  fi
+
+  AC_DEFINE([HAVE_JWT], [1], [LibJWT support])
+fi
+AM_CONDITIONAL([BUILD_WITH_JWT], [test "$WITH_JWT" != no])
+
+AC_SUBST([JWT_LIBS])
+AC_SUBST([JWT_CFLAGS])
 
 dnl Check for LDAP
 AC_MSG_NOTICE([----------------------------------------])

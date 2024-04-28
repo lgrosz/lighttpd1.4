@@ -440,6 +440,9 @@ conf_data.set('HAVE_PGSQL', libpq.found())
 libsasl = dependency('libsasl2', required: get_option('with_sasl'))
 conf_data.set('HAVE_SASL', libsasl.found())
 
+libjwt = dependency('libjwt', required: get_option('with_jwt'))
+conf_data.set('HAVE_JWT', libjwt.found())
+
 #if get_option('with_valgrind')
 #endif
 
@@ -863,6 +866,12 @@ endif
 if libsasl.found()
 	modules += [
 		[ 'mod_authn_sasl', [ 'mod_authn_sasl.c' ], libsasl ],
+	]
+endif
+
+if libjwt.found()
+	modules += [
+		[ 'mod_authn_jwt', [ 'mod_authn_jwt.c' ], libjwt ],
 	]
 endif
 

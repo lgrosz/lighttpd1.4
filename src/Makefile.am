@@ -287,6 +287,14 @@ mod_authn_sasl_la_LIBADD = $(SASL_LIBS) $(common_libadd)
 mod_authn_sasl_la_CPPFLAGS = $(SASL_CFLAGS)
 endif
 
+if BUILD_WITH_JWT
+lib_LTLIBRARIES += mod_authn_jwt.la
+mod_authn_jwt_la_SOURCES = mod_authn_jwt.c
+mod_authn_jwt_la_LDFLAGS = $(common_module_ldflags)
+mod_authn_jwt_la_LIBADD = $(JWT_LIBS) $(common_libadd)
+mod_authn_jwt_la_CPPFLAGS = $(JWT_CFLAGS)
+endif
+
 if BUILD_WITH_OPENSSL
 lib_LTLIBRARIES += mod_openssl.la
 mod_openssl_la_SOURCES = mod_openssl.c
